@@ -11,50 +11,83 @@
         <h1>Aprende Acordes de Piano</h1>
 
         <!-- Piano Keyboard -->
-        <div class="piano">
-            <div class="key white" data-note="C"></div>
-            <div class="key black" data-note="C#"></div>
-            <div class="key white" data-note="D"></div>
-            <div class="key black" data-note="D#"></div>
-            <div class="key white" data-note="E"></div>
-            <div class="key white" data-note="F"></div>
-            <div class="key black" data-note="F#"></div>
-            <div class="key white" data-note="G"></div>
-            <div class="key black" data-note="G#"></div>
-            <div class="key white" data-note="A"></div>
-            <div class="key black" data-note="A#"></div>
-            <div class="key white" data-note="B"></div>
-            <div class="key white" data-note="C2"></div>
-            <div class="key black" data-note="C#2"></div>
-            <div class="key white" data-note="D2"></div>
-            <div class="key black" data-note="D#2"></div>
-            <div class="key white" data-note="E2"></div>
+        <div class="piano-container">
+            <div class="piano">
+                <!-- White keys -->
+                <div class="key white" data-note="C" data-key-index="0">
+                    <span class="key-label">C</span>
+                </div>
+                <div class="key white" data-note="D" data-key-index="1">
+                    <span class="key-label">D</span>
+                </div>
+                <div class="key white" data-note="E" data-key-index="2">
+                    <span class="key-label">E</span>
+                </div>
+                <div class="key white" data-note="F" data-key-index="3">
+                    <span class="key-label">F</span>
+                </div>
+                <div class="key white" data-note="G" data-key-index="4">
+                    <span class="key-label">G</span>
+                </div>
+                <div class="key white" data-note="A" data-key-index="5">
+                    <span class="key-label">A</span>
+                </div>
+                <div class="key white" data-note="B" data-key-index="6">
+                    <span class="key-label">B</span>
+                </div>
+                <div class="key white" data-note="C2" data-key-index="7">
+                    <span class="key-label">C</span>
+                </div>
+                <div class="key white" data-note="D2" data-key-index="8">
+                    <span class="key-label">D</span>
+                </div>
+                <div class="key white" data-note="E2" data-key-index="9">
+                    <span class="key-label">E</span>
+                </div>
+
+                <!-- Black keys positioned absolutely -->
+                <div class="key black" data-note="C#" data-black-pos="0"></div>
+                <div class="key black" data-note="D#" data-black-pos="1"></div>
+                <div class="key black" data-note="F#" data-black-pos="3"></div>
+                <div class="key black" data-note="G#" data-black-pos="4"></div>
+                <div class="key black" data-note="A#" data-black-pos="5"></div>
+                <div class="key black" data-note="C#2" data-black-pos="7"></div>
+                <div class="key black" data-note="D#2" data-black-pos="8"></div>
+            </div>
         </div>
 
         <!-- Controls -->
         <div class="controls">
-            <h2>Selecciona una nota base:</h2>
-            <div class="note-selector">
-                <button class="note-btn" data-root="C">C</button>
-                <button class="note-btn" data-root="C#">C#</button>
-                <button class="note-btn" data-root="D">D</button>
-                <button class="note-btn" data-root="D#">D#</button>
-                <button class="note-btn" data-root="E">E</button>
-                <button class="note-btn" data-root="F">F</button>
-                <button class="note-btn" data-root="F#">F#</button>
-                <button class="note-btn" data-root="G">G</button>
-                <button class="note-btn" data-root="G#">G#</button>
-                <button class="note-btn" data-root="A">A</button>
-                <button class="note-btn" data-root="A#">A#</button>
-                <button class="note-btn" data-root="B">B</button>
+            <h2>Acordes Mayores</h2>
+            <div class="chord-row major-row">
+                <button class="chord-btn major" data-root="C" data-type="mayor">C Mayor</button>
+                <button class="chord-btn major" data-root="C#" data-type="mayor">C# Mayor</button>
+                <button class="chord-btn major" data-root="D" data-type="mayor">D Mayor</button>
+                <button class="chord-btn major" data-root="D#" data-type="mayor">D# Mayor</button>
+                <button class="chord-btn major" data-root="E" data-type="mayor">E Mayor</button>
+                <button class="chord-btn major" data-root="F" data-type="mayor">F Mayor</button>
+                <button class="chord-btn major" data-root="F#" data-type="mayor">F# Mayor</button>
+                <button class="chord-btn major" data-root="G" data-type="mayor">G Mayor</button>
+                <button class="chord-btn major" data-root="G#" data-type="mayor">G# Mayor</button>
+                <button class="chord-btn major" data-root="A" data-type="mayor">A Mayor</button>
+                <button class="chord-btn major" data-root="A#" data-type="mayor">A# Mayor</button>
+                <button class="chord-btn major" data-root="B" data-type="mayor">B Mayor</button>
             </div>
 
-            <h2>Tipo de acorde:</h2>
-            <div class="chord-selector">
-                <button class="chord-btn" data-type="mayor">Mayor</button>
-                <button class="chord-btn" data-type="menor">Menor</button>
-                <button class="chord-btn" data-type="disminuido">Disminuido</button>
-                <button class="chord-btn" data-type="aumentado">Aumentado</button>
+            <h2>Acordes Menores</h2>
+            <div class="chord-row minor-row">
+                <button class="chord-btn minor" data-root="C" data-type="menor">C Menor</button>
+                <button class="chord-btn minor" data-root="C#" data-type="menor">C# Menor</button>
+                <button class="chord-btn minor" data-root="D" data-type="menor">D Menor</button>
+                <button class="chord-btn minor" data-root="D#" data-type="menor">D# Menor</button>
+                <button class="chord-btn minor" data-root="E" data-type="menor">E Menor</button>
+                <button class="chord-btn minor" data-root="F" data-type="menor">F Menor</button>
+                <button class="chord-btn minor" data-root="F#" data-type="menor">F# Menor</button>
+                <button class="chord-btn minor" data-root="G" data-type="menor">G Menor</button>
+                <button class="chord-btn minor" data-root="G#" data-type="menor">G# Menor</button>
+                <button class="chord-btn minor" data-root="A" data-type="menor">A Menor</button>
+                <button class="chord-btn minor" data-root="A#" data-type="menor">A# Menor</button>
+                <button class="chord-btn minor" data-root="B" data-type="menor">B Menor</button>
             </div>
 
             <button id="clearBtn" class="clear-btn">Limpiar</button>

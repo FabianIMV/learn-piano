@@ -7,75 +7,60 @@ const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const chordFormulas = {
     mayor: [0, 4, 7],      // Root, Major 3rd, Perfect 5th
     menor: [0, 3, 7],      // Root, Minor 3rd, Perfect 5th
-    disminuido: [0, 3, 6], // Root, Minor 3rd, Diminished 5th
-    aumentado: [0, 4, 8]   // Root, Major 3rd, Augmented 5th
 };
 
 // Chord names in Spanish
 const chordNames = {
     mayor: 'Mayor',
     menor: 'Menor',
-    disminuido: 'Disminuido',
-    aumentado: 'Aumentado'
 };
-
-// State
-let selectedRoot = null;
-let selectedChordType = null;
 
 // DOM elements
 const keys = document.querySelectorAll('.key');
-const noteButtons = document.querySelectorAll('.note-btn');
 const chordButtons = document.querySelectorAll('.chord-btn');
 const clearBtn = document.getElementById('clearBtn');
 const chordInfo = document.getElementById('chordInfo');
 
+let currentActiveButton = null;
+
 // Initialize event listeners
 function init() {
-    noteButtons.forEach(btn => {
-        btn.addEventListener('click', () => handleNoteClick(btn));
-    });
-
     chordButtons.forEach(btn => {
         btn.addEventListener('click', () => handleChordClick(btn));
     });
 
     clearBtn.addEventListener('click', clearAll);
 
-    // Add click sound to piano keys
+    // Add click effect to piano keys
     keys.forEach(key => {
         key.addEventListener('click', () => {
             key.classList.add('active');
-            setTimeout(() => key.classList.remove('active'), 300);
+            setTimeout(() => {
+                // Only remove active if it's not part of current chord
+                if (!currentActiveButton) {
+                    key.classList.remove('active');
+                }
+            }, 200);
         });
     });
 }
 
-// Handle note button click
-function handleNoteClick(btn) {
-    // Remove previous selection
-    noteButtons.forEach(b => b.classList.remove('selected'));
-
-    // Select new note
-    btn.classList.add('selected');
-    selectedRoot = btn.getAttribute('data-root');
-
-    // If chord type is selected, show the chord
-    if (selectedChordType) {
-        showChord(selectedRoot, selectedChordType);
-    }
-}
-
 // Handle chord button click
 function handleChordClick(btn) {
-    selectedChordType = btn.getAttribute('data-type');
+    const root = btn.getAttribute('data-root');
+    const chordType = btn.getAttribute('data-type');
 
-    // If root note is selected, show the chord
-    if (selectedRoot) {
-        showChord(selectedRoot, selectedChordType);
-    } else {
-        chordInfo.innerHTML = '⚠️ Por favor, selecciona primero una nota base';
+    // Remove previous button selection
+    if (currentActiveButton) {
+        currentActiveButton.classList.remove('active');
     }
+
+    // Select new button
+    btn.classList.add('active');
+    currentActiveButton = btn;
+
+    // Show the chord on piano
+    showChord(root, chordType);
 }
 
 // Show chord on piano
@@ -105,11 +90,17 @@ function getChordNotes(root, chordType) {
 
     // Find root index
     let rootIndex = notes.indexOf(normalizedRoot);
-    if (rootIndex === -1) return [];
+    if (rootIndex === -1) {
+        console.error('Invalid root note:', root);
+        return [];
+    }
 
     // Get chord formula
     const formula = chordFormulas[chordType];
-    if (!formula) return [];
+    if (!formula) {
+        console.error('Invalid chord type:', chordType);
+        return [];
+    }
 
     // Calculate chord notes
     const chordNotes = formula.map(interval => {
@@ -117,7 +108,9 @@ function getChordNotes(root, chordType) {
         let note = notes[noteIndex];
 
         // Handle octave wrap (if we need the second octave)
-        if (rootIndex + interval >= 12) {
+        // Check if the resulting note would be "lower" than the root on piano
+        const actualNoteIndex = rootIndex + interval;
+        if (actualNoteIndex >= 12) {
             note = note + '2';
         }
 
@@ -133,26 +126,24 @@ function displayChordInfo(root, chordType, chordNotes) {
     const notesDisplay = chordNotes.map(note => note.replace('2', '')).join(' - ');
 
     let intervalDescription = '';
+    let emoji = '';
+
     switch(chordType) {
         case 'mayor':
-            intervalDescription = '(Fundamental + 3ª Mayor + 5ª Justa)';
+            intervalDescription = 'Fundamental + 3ª Mayor + 5ª Justa';
+            emoji = '😊';
             break;
         case 'menor':
-            intervalDescription = '(Fundamental + 3ª Menor + 5ª Justa)';
-            break;
-        case 'disminuido':
-            intervalDescription = '(Fundamental + 3ª Menor + 5ª Disminuida)';
-            break;
-        case 'aumentado':
-            intervalDescription = '(Fundamental + 3ª Mayor + 5ª Aumentada)';
+            intervalDescription = 'Fundamental + 3ª Menor + 5ª Justa';
+            emoji = '😔';
             break;
     }
 
     chordInfo.innerHTML = `
         <div>
-            <strong>🎵 ${chordName}</strong><br>
-            <span style="font-size: 16px;">Notas: ${notesDisplay}</span><br>
-            <span style="font-size: 14px; color: #666;">${intervalDescription}</span>
+            <strong style="font-size: 24px;">${emoji} ${chordName}</strong><br>
+            <span style="font-size: 18px; color: #555;">Notas: ${notesDisplay}</span><br>
+            <span style="font-size: 14px; color: #666; font-style: italic;">${intervalDescription}</span>
         </div>
     `;
 }
@@ -160,10 +151,13 @@ function displayChordInfo(root, chordType, chordNotes) {
 // Clear all selections
 function clearAll() {
     keys.forEach(key => key.classList.remove('active'));
-    noteButtons.forEach(btn => btn.classList.remove('selected'));
-    selectedRoot = null;
-    selectedChordType = null;
-    chordInfo.innerHTML = '👆 Selecciona una nota base y un tipo de acorde para empezar';
+
+    if (currentActiveButton) {
+        currentActiveButton.classList.remove('active');
+        currentActiveButton = null;
+    }
+
+    chordInfo.innerHTML = '👆 Haz clic en un acorde para ver las notas en el piano';
 }
 
 // Initialize the app
