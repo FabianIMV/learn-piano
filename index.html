@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Acordes de Piano</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Aprende Acordes de Piano</h1>
+
+        <!-- Piano Keyboard -->
+        <div class="piano">
+            <div class="key white" data-note="C"></div>
+            <div class="key black" data-note="C#"></div>
+            <div class="key white" data-note="D"></div>
+            <div class="key black" data-note="D#"></div>
+            <div class="key white" data-note="E"></div>
+            <div class="key white" data-note="F"></div>
+            <div class="key black" data-note="F#"></div>
+            <div class="key white" data-note="G"></div>
+            <div class="key black" data-note="G#"></div>
+            <div class="key white" data-note="A"></div>
+            <div class="key black" data-note="A#"></div>
+            <div class="key white" data-note="B"></div>
+            <div class="key white" data-note="C2"></div>
+            <div class="key black" data-note="C#2"></div>
+            <div class="key white" data-note="D2"></div>
+            <div class="key black" data-note="D#2"></div>
+            <div class="key white" data-note="E2"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <h2>Selecciona una nota base:</h2>
+            <div class="note-selector">
+                <button class="note-btn" data-root="C">C</button>
+                <button class="note-btn" data-root="C#">C#</button>
+                <button class="note-btn" data-root="D">D</button>
+                <button class="note-btn" data-root="D#">D#</button>
+                <button class="note-btn" data-root="E">E</button>
+                <button class="note-btn" data-root="F">F</button>
+                <button class="note-btn" data-root="F#">F#</button>
+                <button class="note-btn" data-root="G">G</button>
+                <button class="note-btn" data-root="G#">G#</button>
+                <button class="note-btn" data-root="A">A</button>
+                <button class="note-btn" data-root="A#">A#</button>
+                <button class="note-btn" data-root="B">B</button>
+            </div>
+
+            <h2>Tipo de acorde:</h2>
+            <div class="chord-selector">
+                <button class="chord-btn" data-type="mayor">Mayor</button>
+                <button class="chord-btn" data-type="menor">Menor</button>
+                <button class="chord-btn" data-type="disminuido">Disminuido</button>
+                <button class="chord-btn" data-type="aumentado">Aumentado</button>
+            </div>
+
+            <button id="clearBtn" class="clear-btn">Limpiar</button>
+
+            <div id="chordInfo" class="chord-info"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

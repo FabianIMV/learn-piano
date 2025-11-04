@@ -1,0 +1,214 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+h2 {
+    color: #555;
+    margin: 20px 0 15px 0;
+    font-size: 1.3em;
+}
+
+/* Piano Styling */
+.piano {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin: 40px auto;
+    height: 300px;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.key {
+    cursor: pointer;
+    transition: all 0.1s;
+    border: 2px solid #000;
+}
+
+.key.white {
+    width: 60px;
+    height: 260px;
+    background: linear-gradient(to bottom, #fefefe 0%, #f0f0f0 100%);
+    border-radius: 0 0 5px 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.key.white:hover {
+    background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+}
+
+.key.white:active {
+    background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%);
+    transform: translateY(2px);
+}
+
+.key.black {
+    width: 40px;
+    height: 160px;
+    background: linear-gradient(to bottom, #333 0%, #000 100%);
+    border-radius: 0 0 3px 3px;
+    position: absolute;
+    z-index: 2;
+    margin-left: -20px;
+}
+
+.key.black:hover {
+    background: linear-gradient(to bottom, #444 0%, #222 100%);
+}
+
+.key.black:active {
+    background: linear-gradient(to bottom, #222 0%, #000 100%);
+    transform: translateY(2px);
+}
+
+/* Position black keys */
+.key.black[data-note="C#"] { left: 60px; }
+.key.black[data-note="D#"] { left: 180px; }
+.key.black[data-note="F#"] { left: 360px; }
+.key.black[data-note="G#"] { left: 480px; }
+.key.black[data-note="A#"] { left: 600px; }
+.key.black[data-note="C#2"] { left: 780px; }
+.key.black[data-note="D#2"] { left: 900px; }
+
+/* Active/highlighted key */
+.key.active {
+    box-shadow: 0 0 20px 5px #ff6b6b;
+}
+
+.key.white.active {
+    background: linear-gradient(to bottom, #ffcccb 0%, #ff9999 100%);
+}
+
+.key.black.active {
+    background: linear-gradient(to bottom, #ff4444 0%, #cc0000 100%);
+}
+
+/* Controls */
+.controls {
+    text-align: center;
+}
+
+.note-selector,
+.chord-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.note-btn,
+.chord-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.note-btn:hover,
+.chord-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.note-btn.selected {
+    background: #667eea;
+    color: white;
+}
+
+.chord-btn {
+    border-color: #764ba2;
+    color: #764ba2;
+    min-width: 120px;
+}
+
+.chord-btn:hover {
+    background: #764ba2;
+    border-color: #764ba2;
+}
+
+.clear-btn {
+    padding: 12px 40px;
+    font-size: 16px;
+    border: 2px solid #e74c3c;
+    background: white;
+    color: #e74c3c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.clear-btn:hover {
+    background: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+.chord-info {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-size: 18px;
+    color: #333;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 5px solid #667eea;
+}
+
+@media (max-width: 768px) {
+    .piano {
+        transform: scale(0.7);
+        margin: 20px auto;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .note-btn,
+    .chord-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
