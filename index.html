@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprende Acordes de Piano</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Aprende Acordes de Piano</h1>
@@ -44,6 +46,12 @@
                 <div class="key white" data-note="E2" data-key-index="9">
                     <span class="key-label">E</span>
                 </div>
+                <div class="key white" data-note="F2" data-key-index="10">
+                    <span class="key-label">F</span>
+                </div>
+                <div class="key white" data-note="G2" data-key-index="11">
+                    <span class="key-label">G</span>
+                </div>
 
                 <!-- Black keys positioned absolutely -->
                 <div class="key black" data-note="C#" data-black-pos="0"></div>
@@ -53,41 +61,74 @@
                 <div class="key black" data-note="A#" data-black-pos="5"></div>
                 <div class="key black" data-note="C#2" data-black-pos="7"></div>
                 <div class="key black" data-note="D#2" data-black-pos="8"></div>
+                <div class="key black" data-note="F#2" data-black-pos="10"></div>
             </div>
+        </div>
+
+        <!-- Song Mode -->
+        <div class="song-mode">
+            <h2>🎵 Modo Canción</h2>
+            <div class="song-input-container">
+                <input type="text" id="songInput" placeholder="Escribe acordes: C, D, Em, Bm, G, Am..."
+                    class="song-input">
+                <button id="loadSongBtn" class="load-song-btn">Cargar</button>
+            </div>
+            <div id="songPlayer" class="song-player hidden">
+                <button class="nav-btn prev-btn" id="prevChordBtn">◀</button>
+                <div class="song-chords" id="songChords"></div>
+                <button class="nav-btn next-btn" id="nextChordBtn">▶</button>
+            </div>
+            <div class="song-hint">💡 Usa ← → del teclado para navegar entre acordes</div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="mode-selector">
+            <span class="mode-label">Modo de teclado:</span>
+            <button class="mode-btn active" data-mode="mayor">Mayor</button>
+            <button class="mode-btn" data-mode="menor">Menor</button>
+            <span class="keyboard-hint">🎹 Presiona C, D, E, F, G, A, B en tu teclado</span>
         </div>
 
         <!-- Controls -->
         <div class="controls">
             <h2>Acordes Mayores</h2>
             <div class="chord-row major-row">
-                <button class="chord-btn major" data-root="C" data-type="mayor">C Mayor</button>
-                <button class="chord-btn major" data-root="C#" data-type="mayor">C# Mayor</button>
-                <button class="chord-btn major" data-root="D" data-type="mayor">D Mayor</button>
-                <button class="chord-btn major" data-root="D#" data-type="mayor">D# Mayor</button>
-                <button class="chord-btn major" data-root="E" data-type="mayor">E Mayor</button>
-                <button class="chord-btn major" data-root="F" data-type="mayor">F Mayor</button>
-                <button class="chord-btn major" data-root="F#" data-type="mayor">F# Mayor</button>
-                <button class="chord-btn major" data-root="G" data-type="mayor">G Mayor</button>
-                <button class="chord-btn major" data-root="G#" data-type="mayor">G# Mayor</button>
-                <button class="chord-btn major" data-root="A" data-type="mayor">A Mayor</button>
-                <button class="chord-btn major" data-root="A#" data-type="mayor">A# Mayor</button>
-                <button class="chord-btn major" data-root="B" data-type="mayor">B Mayor</button>
+                <button class="chord-btn major" data-root="C" data-type="mayor">C</button>
+                <button class="chord-btn major" data-root="D" data-type="mayor">D</button>
+                <button class="chord-btn major" data-root="E" data-type="mayor">E</button>
+                <button class="chord-btn major" data-root="F" data-type="mayor">F</button>
+                <button class="chord-btn major" data-root="G" data-type="mayor">G</button>
+                <button class="chord-btn major" data-root="A" data-type="mayor">A</button>
+                <button class="chord-btn major" data-root="B" data-type="mayor">B</button>
+            </div>
+
+            <h2>Acordes Mayores #</h2>
+            <div class="chord-row major-sharp-row">
+                <button class="chord-btn major-sharp" data-root="C#" data-type="mayor">C#</button>
+                <button class="chord-btn major-sharp" data-root="D#" data-type="mayor">D#</button>
+                <button class="chord-btn major-sharp" data-root="F#" data-type="mayor">F#</button>
+                <button class="chord-btn major-sharp" data-root="G#" data-type="mayor">G#</button>
+                <button class="chord-btn major-sharp" data-root="A#" data-type="mayor">A#</button>
             </div>
 
             <h2>Acordes Menores</h2>
             <div class="chord-row minor-row">
-                <button class="chord-btn minor" data-root="C" data-type="menor">C Menor</button>
-                <button class="chord-btn minor" data-root="C#" data-type="menor">C# Menor</button>
-                <button class="chord-btn minor" data-root="D" data-type="menor">D Menor</button>
-                <button class="chord-btn minor" data-root="D#" data-type="menor">D# Menor</button>
-                <button class="chord-btn minor" data-root="E" data-type="menor">E Menor</button>
-                <button class="chord-btn minor" data-root="F" data-type="menor">F Menor</button>
-                <button class="chord-btn minor" data-root="F#" data-type="menor">F# Menor</button>
-                <button class="chord-btn minor" data-root="G" data-type="menor">G Menor</button>
-                <button class="chord-btn minor" data-root="G#" data-type="menor">G# Menor</button>
-                <button class="chord-btn minor" data-root="A" data-type="menor">A Menor</button>
-                <button class="chord-btn minor" data-root="A#" data-type="menor">A# Menor</button>
-                <button class="chord-btn minor" data-root="B" data-type="menor">B Menor</button>
+                <button class="chord-btn minor" data-root="C" data-type="menor">Cm</button>
+                <button class="chord-btn minor" data-root="D" data-type="menor">Dm</button>
+                <button class="chord-btn minor" data-root="E" data-type="menor">Em</button>
+                <button class="chord-btn minor" data-root="F" data-type="menor">Fm</button>
+                <button class="chord-btn minor" data-root="G" data-type="menor">Gm</button>
+                <button class="chord-btn minor" data-root="A" data-type="menor">Am</button>
+                <button class="chord-btn minor" data-root="B" data-type="menor">Bm</button>
+            </div>
+
+            <h2>Acordes Menores #</h2>
+            <div class="chord-row minor-sharp-row">
+                <button class="chord-btn minor-sharp" data-root="C#" data-type="menor">C#m</button>
+                <button class="chord-btn minor-sharp" data-root="D#" data-type="menor">D#m</button>
+                <button class="chord-btn minor-sharp" data-root="F#" data-type="menor">F#m</button>
+                <button class="chord-btn minor-sharp" data-root="G#" data-type="menor">G#m</button>
+                <button class="chord-btn minor-sharp" data-root="A#" data-type="menor">A#m</button>
             </div>
 
             <button id="clearBtn" class="clear-btn">Limpiar</button>
@@ -98,4 +139,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

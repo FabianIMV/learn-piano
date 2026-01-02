@@ -1,69 +1,77 @@
-# Aprende Acordes de Piano 🎹
+# Learn Piano Chords 🎹
 
-Una aplicación web interactiva para aprender acordes de piano de forma visual y sencilla.
+An interactive web application to learn piano chords visually with audio feedback.
 
-## Características
+![Piano Chord Demo](docs/b_chord_demo.png)
 
-- Piano visual interactivo con teclas blancas y negras
-- Aprende acordes mayores, menores, disminuidos y aumentados
-- Selecciona cualquier nota como base (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
-- Las teclas se iluminan mostrando qué tocar para cada acorde
-- Información detallada de los intervalos de cada acorde
+## ✨ Features
 
-## Cómo usar
+### 🎵 Chord Library (4 Categories)
+- **Major Chords**: C, D, E, F, G, A, B
+- **Major Sharp Chords**: C#, D#, F#, G#, A#
+- **Minor Chords**: Cm, Dm, Em, Fm, Gm, Am, Bm
+- **Minor Sharp Chords**: C#m, D#m, F#m, G#m, A#m
 
-1. Abre `index.html` en tu navegador
-2. Selecciona una nota base (por ejemplo, C, D, E, etc.)
-3. Haz click en un tipo de acorde (Mayor, Menor, Disminuido, Aumentado)
-4. Las teclas del piano se iluminarán mostrando qué notas tocar
-5. Usa el botón "Limpiar" para reiniciar
+### 🔊 Audio Playback
+- Real-time chord audio using **Web Audio API**
+- Arpeggio effect for natural sound
+- No external audio files needed
 
-## Tipos de acordes incluidos
+### ⌨️ Keyboard Controls
+| Key | Action |
+|-----|--------|
+| C, D, E, F, G, A, B | Play chord (Major or Minor based on mode) |
+| ← → | Navigate through song mode |
 
-- **Mayor**: Fundamental + 3ª Mayor + 5ª Justa
-- **Menor**: Fundamental + 3ª Menor + 5ª Justa
-- **Disminuido**: Fundamental + 3ª Menor + 5ª Disminuida
-- **Aumentado**: Fundamental + 3ª Mayor + 5ª Aumentada
+### 🎶 Song Mode
+Create custom chord progressions for practice!
 
-## Tecnologías
+![Song Mode Demo](docs/song_mode_demo.png)
+
+1. Type chords separated by commas: `C, G, Am, F`
+2. Click **"Cargar"** (Load)
+3. Navigate with **◀ ▶** buttons or arrow keys
+
+**Supported formats:** `C, Dm, E, F#m, G#, Am`
+
+## 🚀 How to Use
+
+1. Open `index.html` in your browser
+2. Click any chord button to see and hear it
+3. Use **Mayor/Menor** toggle for keyboard mode
+4. Enter a chord sequence in Song Mode for practice
+
+## 🛠️ Technologies
 
 - HTML5
-- CSS3 (con gradientes y animaciones)
-- JavaScript vanilla (sin dependencias)
+- CSS3 (gradients, animations, glassmorphism)
+- Vanilla JavaScript (Web Audio API)
+- No dependencies!
 
-## Demo
+## 📦 Deployment
 
-Simplemente abre el archivo `index.html` en cualquier navegador moderno.
+### GitHub Pages (Automatic)
 
-## Despliegue en GitHub Pages
+This project includes a GitHub Actions workflow for automatic deployment:
 
-Este proyecto incluye un workflow de GitHub Actions que despliega automáticamente la aplicación en GitHub Pages.
+1. **Enable GitHub Pages:**
+   - Go to Settings > Pages
+   - Select "GitHub Actions" as source
 
-### Configuración inicial:
+2. **Push to main/master** - deployment is automatic!
 
-1. **Mergea el Pull Request a la rama main/master**
-   ```bash
-   # O desde la interfaz de GitHub, mergea el PR
+3. **Access your app:**
+   ```
+   https://YourUsername.github.io/learn-piano/
    ```
 
-2. **Habilita GitHub Pages en tu repositorio:**
-   - Ve a Settings > Pages
-   - En "Source", selecciona "GitHub Actions"
-   - Guarda los cambios
+## 🎹 Chord Theory
 
-3. **El workflow se ejecutará automáticamente** cada vez que hagas push a main/master
+| Type | Formula |
+|------|---------|
+| Major | Root + Major 3rd + Perfect 5th |
+| Minor | Root + Minor 3rd + Perfect 5th |
 
-4. **Accede a tu aplicación en:**
-   ```
-   https://TuUsuario.github.io/learn-piano/
-   ```
+---
 
-### Workflow automático
-
-El archivo `.github/workflows/deploy.yml` se encarga de:
-- ✅ Detectar cambios en main/master
-- ✅ Construir y desplegar automáticamente
-- ✅ Actualizar GitHub Pages
-- ✅ Soporte para despliegue manual (workflow_dispatch)
-
-¡No necesitas hacer nada más! Cada commit a main/master actualizará automáticamente tu sitio.
+Made with ❤️ for piano learners
