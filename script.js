@@ -248,10 +248,22 @@ function loadSong() {
         return;
     }
 
+    // Save to localStorage for persistence
+    localStorage.setItem('savedPianoSong', input);
+
     currentSongIndex = 0;
     renderSongChords();
     songPlayer.classList.remove('hidden');
     playSongChord(0);
+}
+
+// Check for saved song on startup
+function checkSavedSong() {
+    const savedSong = localStorage.getItem('savedPianoSong');
+    if (savedSong) {
+        songInput.value = savedSong;
+        loadSong();
+    }
 }
 
 // Render song chord buttons
@@ -534,4 +546,5 @@ function clearAll() {
 
 // Initialize the app
 init();
+checkSavedSong();
 clearAll();
