@@ -367,7 +367,18 @@ function handleKeyDown(event) {
 
     event.preventDefault();
 
-    // Find the corresponding chord button and trigger it
+    // If song mode is active, map keys to song chord positions
+    if (songChordsList.length > 0) {
+        const keyToIndex = { 'C': 0, 'D': 1, 'E': 2, 'F': 3, 'G': 4, 'A': 5, 'B': 6 };
+        const chordIndex = keyToIndex[root];
+
+        if (chordIndex !== undefined && chordIndex < songChordsList.length) {
+            playSongChord(chordIndex);
+            return;
+        }
+    }
+
+    // Default behavior: use Major/Minor mode selector
     const selector = `.chord-btn[data-root="${root}"][data-type="${currentMode}"]`;
     const chordBtn = document.querySelector(selector);
 
