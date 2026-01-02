@@ -70,8 +70,8 @@ function initAudio() {
     }
 }
 
-// Play a single note using Web Audio API with realistic piano sound
-function playNote(noteName, duration = 2.5) {
+// Play a single note using Web Audio API with advanced realistic piano synthesis
+function playNote(noteName, duration = 2.8) {
     initAudio();
 
     const frequency = noteFrequencies[noteName];
@@ -79,52 +79,64 @@ function playNote(noteName, duration = 2.5) {
 
     const now = audioCtx.currentTime;
 
+    // 1. Stereo Panning (Bass = Left, Treble = Right)
+    // C4 (261Hz) is roughly center. Map frequencies to -0.6 to 0.6 pan
+    const panValue = Math.min(Math.max((Math.log2(frequency / 261.63)) * 0.2, -0.6), 0.6);
+    const panner = audioCtx.createStereoPanner();
+    panner.pan.setValueAtTime(panValue, now);
+    panner.connect(audioCtx.destination);
+
     // Master gain for this note
     const masterGain = audioCtx.createGain();
-    masterGain.connect(audioCtx.destination);
+    masterGain.connect(panner);
 
-    // Create convolver for reverb effect
+    // 2. Advanced Reverb (Convolver)
     const convolver = createReverb();
     const reverbGain = audioCtx.createGain();
-    reverbGain.gain.value = 0.15;
+    reverbGain.gain.value = 0.12;
     convolver.connect(reverbGain);
-    reverbGain.connect(audioCtx.destination);
+    reverbGain.connect(panner);
 
-    // Piano has multiple harmonics - create them
-    const harmonics = [
-        { ratio: 1, gain: 0.6, type: 'sine' },        // Fundamental
-        { ratio: 2, gain: 0.25, type: 'sine' },       // 2nd harmonic
-        { ratio: 3, gain: 0.12, type: 'sine' },       // 3rd harmonic
-        { ratio: 4, gain: 0.08, type: 'sine' },       // 4th harmonic
-        { ratio: 5, gain: 0.04, type: 'sine' },       // 5th harmonic
-        { ratio: 6, gain: 0.02, type: 'sine' },       // 6th harmonic
+    // 3. Inharmonic Partials (String Stiffness)
+    // Higher partials are slightly sharper in real pianos (B = inharmonicity coefficient)
+    const B = 0.0001;
+    const partialConfigs = [
+        { n: 1, gain: 0.7 },   // Fundamental
+        { n: 2, gain: 0.35 },  // Overtones...
+        { n: 3, gain: 0.22 },
+        { n: 4, gain: 0.14 },
+        { n: 5, gain: 0.09 },
+        { n: 6, gain: 0.06 },
+        { n: 7, gain: 0.04 },
+        { n: 8, gain: 0.02 }
     ];
 
-    harmonics.forEach(harmonic => {
+    partialConfigs.forEach(conf => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        osc.type = harmonic.type;
-        osc.frequency.setValueAtTime(frequency * harmonic.ratio, now);
+        // Inharmonicity formula: fn = n * f1 * sqrt(1 + B * n^2)
+        const partialFreq = conf.n * frequency * Math.sqrt(1 + B * Math.pow(conf.n, 2));
 
-        // Slight detuning for warmth (piano strings are slightly out of tune)
-        const detune = (Math.random() - 0.5) * 4;
-        osc.detune.setValueAtTime(detune, now);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(partialFreq, now);
 
-        // Piano ADSR envelope - quick attack, natural decay
-        const peakGain = harmonic.gain * 0.4;
+        // Subtle detuning per partial for more "analog" feel
+        osc.detune.setValueAtTime((Math.random() - 0.5) * 2, now);
 
-        // Attack (hammer strike) - very fast
+        // Multi-stage Envelope (Physical Modeling approach)
+        // High partials decay faster than low partials
+        const decayConstant = 1.0 / (conf.n * 0.5 + 0.5);
+        const peak = conf.gain * 0.3;
+
         gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(peakGain, now + 0.005);
-
-        // Initial decay (hammer release)
-        gain.gain.exponentialRampToValueAtTime(peakGain * 0.7, now + 0.05);
-
-        // Sustain decay (string vibration dying)
-        gain.gain.exponentialRampToValueAtTime(peakGain * 0.3, now + 0.3);
-
-        // Long release (natural string decay)
+        // Hammer Hit (Fast Attack)
+        gain.gain.linearRampToValueAtTime(peak, now + 0.004);
+        // Hammer Release (Fast Decay)
+        gain.gain.exponentialRampToValueAtTime(peak * 0.8, now + 0.04);
+        // String Vibration (Slower Decay)
+        gain.gain.exponentialRampToValueAtTime(peak * 0.2, now + 0.5 * decayConstant);
+        // Final Tail
         gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
         osc.connect(gain);
@@ -135,38 +147,56 @@ function playNote(noteName, duration = 2.5) {
         osc.stop(now + duration + 0.1);
     });
 
-    // Add hammer noise for attack realism
-    const noiseBuffer = createNoiseBuffer(0.03);
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = noiseBuffer;
+    // 4. Hammer "Thud" (Low-frequency impact noise)
+    const hammerNoise = audioCtx.createBufferSource();
+    hammerNoise.buffer = createNoiseBuffer(0.05, true); // Low-passed noise
+    const hGain = audioCtx.createGain();
+    const hFilter = audioCtx.createBiquadFilter();
 
-    const noiseGain = audioCtx.createGain();
-    const noiseFilter = audioCtx.createBiquadFilter();
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.value = frequency * 2;
-    noiseFilter.Q.value = 1;
+    hFilter.type = 'lowpass';
+    hFilter.frequency.setValueAtTime(frequency * 1.5, now);
+    hFilter.Q.setValueAtTime(1, now);
 
-    noiseGain.gain.setValueAtTime(0.08, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    hGain.gain.setValueAtTime(0.15, now);
+    hGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(masterGain);
+    hammerNoise.connect(hFilter);
+    hFilter.connect(hGain);
+    hGain.connect(masterGain);
+    hammerNoise.start(now);
 
-    noise.start(now);
+    // 5. Soundboard Resonance (Subtle broad body resonance)
+    const resonance = audioCtx.createBufferSource();
+    resonance.buffer = createNoiseBuffer(0.1, false); // Very subtle white noise
+    const rGain = audioCtx.createGain();
+    const rFilter = audioCtx.createBiquadFilter();
+    rFilter.type = 'bandpass';
+    rFilter.frequency.setValueAtTime(120, now); // Wooden body resonance freq
+    rFilter.Q.setValueAtTime(0.5, now);
+
+    rGain.gain.setValueAtTime(0.02, now);
+    rGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    resonance.connect(rFilter);
+    rFilter.connect(rGain);
+    rGain.connect(masterGain);
+    resonance.start(now);
 }
 
-// Create a simple reverb impulse response
+// Create a high-quality reverb impulse response (Wooden Room)
 function createReverb() {
     const convolver = audioCtx.createConvolver();
     const rate = audioCtx.sampleRate;
-    const length = rate * 1.5;
+    const length = rate * 2.0; // 2 second tail
     const impulse = audioCtx.createBuffer(2, length, rate);
 
     for (let channel = 0; channel < 2; channel++) {
         const channelData = impulse.getChannelData(channel);
         for (let i = 0; i < length; i++) {
-            channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+            // Decaying white noise with a subtle "shimmer"
+            const noise = (Math.random() * 2 - 1);
+            const swallow = Math.pow(1 - i / length, 3.5); // Faster tail swallow
+            channelData[i] = noise * swallow * (0.8 + 0.2 * Math.sin(i / 100));
         }
     }
 
@@ -174,15 +204,22 @@ function createReverb() {
     return convolver;
 }
 
-// Create noise buffer for hammer attack
-function createNoiseBuffer(duration) {
+// Create noise buffers for hammer and resonance
+function createNoiseBuffer(duration, isHammer = false) {
     const sampleRate = audioCtx.sampleRate;
     const bufferSize = sampleRate * duration;
     const buffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
+        let noise = (Math.random() * 2 - 1);
+        if (isHammer) {
+            // Rougher, darker noise for hammer
+            data[i] = noise * Math.pow(1 - i / bufferSize, 3);
+        } else {
+            // Smoother for resonance
+            data[i] = noise * Math.pow(1 - i / bufferSize, 2);
+        }
     }
 
     return buffer;
