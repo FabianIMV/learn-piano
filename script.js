@@ -44,10 +44,15 @@ const nextChordBtn = document.getElementById('nextChordBtn');
 
 let currentActiveButton = null;
 let currentMode = 'mayor'; // Default mode for keyboard
+let keyboardSource = 'song'; // 'song' uses song chords, 'default' uses Major/Minor
 
 // Song mode state
 let songChordsList = [];
 let currentSongIndex = -1;
+
+// Keyboard source selector elements
+const sourceSongBtn = document.getElementById('sourceSongBtn');
+const sourceDefaultBtn = document.getElementById('sourceDefaultBtn');
 
 // Keyboard mapping (physical key to chord root)
 const keyboardMap = {
@@ -194,7 +199,7 @@ function playChord(chordNotes, arpeggiate = true) {
     });
 }
 
-// Parse chord string (e.g., "C", "Cm", "C#", "C#m")
+// Parse chord string (e.g., "C", "Cm", "C#", "C#m", "Em", "Am")
 function parseChordString(chordStr) {
     chordStr = chordStr.trim();
     if (!chordStr) return null;
@@ -202,20 +207,29 @@ function parseChordString(chordStr) {
     let root = '';
     let type = 'mayor';
 
-    // Check for minor indicator
-    if (chordStr.toLowerCase().endsWith('m') && !chordStr.endsWith('#m')) {
+    // Handle minor chords (ends with 'm' but not '#m' case handled separately)
+    const lowerStr = chordStr.toLowerCase();
+
+    if (lowerStr.endsWith('#m')) {
+        // Sharp minor: C#m, F#m, etc.
         type = 'menor';
-        chordStr = chordStr.slice(0, -1);
-    } else if (chordStr.endsWith('#m')) {
+        root = chordStr.slice(0, -1).toUpperCase(); // Remove 'm', keep '#'
+    } else if (lowerStr.endsWith('m') && chordStr.length > 1) {
+        // Regular minor: Cm, Em, Am, etc.
         type = 'menor';
-        chordStr = chordStr.slice(0, -1); // Remove 'm'
+        root = chordStr.slice(0, -1).toUpperCase(); // Remove 'm'
+    } else {
+        // Major chord
+        root = chordStr.toUpperCase();
     }
 
-    root = chordStr.toUpperCase();
-
-    // Validate root note
-    if (!notes.includes(root.replace('#', '').charAt(0))) {
-        return null;
+    // Validate root note exists in our notes array
+    if (!notes.includes(root)) {
+        // Try matching just the base note letter
+        const baseNote = root.charAt(0);
+        if (!['C', 'D', 'E', 'F', 'G', 'A', 'B'].includes(baseNote)) {
+            return null;
+        }
     }
 
     return { root, type };
@@ -341,6 +355,18 @@ function init() {
     prevChordBtn.addEventListener('click', prevSongChord);
     nextChordBtn.addEventListener('click', nextSongChord);
 
+    // Keyboard source selector
+    sourceSongBtn.addEventListener('click', () => {
+        keyboardSource = 'song';
+        sourceSongBtn.classList.add('active');
+        sourceDefaultBtn.classList.remove('active');
+    });
+    sourceDefaultBtn.addEventListener('click', () => {
+        keyboardSource = 'default';
+        sourceDefaultBtn.classList.add('active');
+        sourceSongBtn.classList.remove('active');
+    });
+
     // Keyboard event listeners
     document.addEventListener('keydown', handleKeyDown);
 }
@@ -367,8 +393,9 @@ function handleKeyDown(event) {
 
     event.preventDefault();
 
-    // If song mode is active, map keys to song chord positions
-    if (songChordsList.length > 0) {
+    // Check which keyboard source mode is selected
+    if (keyboardSource === 'song' && songChordsList.length > 0) {
+        // Song mode: map keys to song chord positions (C=1st, D=2nd, etc.)
         const keyToIndex = { 'C': 0, 'D': 1, 'E': 2, 'F': 3, 'G': 4, 'A': 5, 'B': 6 };
         const chordIndex = keyToIndex[root];
 
