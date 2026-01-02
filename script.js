@@ -395,12 +395,12 @@ function handleKeyDown(event) {
 
     // Check which keyboard source mode is selected
     if (keyboardSource === 'song' && songChordsList.length > 0) {
-        // Song mode: map keys to song chord positions (C=1st, D=2nd, etc.)
-        const keyToIndex = { 'C': 0, 'D': 1, 'E': 2, 'F': 3, 'G': 4, 'A': 5, 'B': 6 };
-        const chordIndex = keyToIndex[root];
+        // Song mode: find chord in song that matches the key's root note
+        // E key → finds Em or E in the song, A key → finds Am or A, etc.
+        const matchingIndex = songChordsList.findIndex(chord => chord.root === root);
 
-        if (chordIndex !== undefined && chordIndex < songChordsList.length) {
-            playSongChord(chordIndex);
+        if (matchingIndex !== -1) {
+            playSongChord(matchingIndex);
             return;
         }
     }
