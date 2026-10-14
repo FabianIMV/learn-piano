@@ -1,148 +1,203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprende Acordes de Piano</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acordes · Aprende a tocar acordes en el piano</title>
+  <meta name="description" content="Mira cualquier acorde en el teclado, escúchalo con un piano de cola y practica las canciones que te gustan, acorde por acorde.">
+  <meta name="theme-color" content="#f6f1e7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14120f" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="src/app.js"></script>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Aprende Acordes de Piano</h1>
+  <div class="page">
+    <header class="masthead">
+      <div class="brand">
+        <h1 class="brand__title">Acordes</h1>
+        <p class="brand__tagline">Mira el acorde, escúchalo y tócalo.</p>
+      </div>
+      <div class="masthead__tools">
+        <div class="segmented" role="radiogroup" aria-label="Notación">
+          <button type="button" role="radio" data-notation="en">C D E</button>
+          <button type="button" role="radio" data-notation="es">Do Re Mi</button>
+        </div>
+        <span class="status" id="soundStatus" aria-live="polite"></span>
+      </div>
+    </header>
 
-        <!-- Piano Keyboard -->
-        <div class="piano-container">
-            <div class="piano">
-                <!-- White keys -->
-                <div class="key white" data-note="C" data-key-index="0">
-                    <span class="key-label">C</span>
-                </div>
-                <div class="key white" data-note="D" data-key-index="1">
-                    <span class="key-label">D</span>
-                </div>
-                <div class="key white" data-note="E" data-key-index="2">
-                    <span class="key-label">E</span>
-                </div>
-                <div class="key white" data-note="F" data-key-index="3">
-                    <span class="key-label">F</span>
-                </div>
-                <div class="key white" data-note="G" data-key-index="4">
-                    <span class="key-label">G</span>
-                </div>
-                <div class="key white" data-note="A" data-key-index="5">
-                    <span class="key-label">A</span>
-                </div>
-                <div class="key white" data-note="B" data-key-index="6">
-                    <span class="key-label">B</span>
-                </div>
-                <div class="key white" data-note="C2" data-key-index="7">
-                    <span class="key-label">C</span>
-                </div>
-                <div class="key white" data-note="D2" data-key-index="8">
-                    <span class="key-label">D</span>
-                </div>
-                <div class="key white" data-note="E2" data-key-index="9">
-                    <span class="key-label">E</span>
-                </div>
-                <div class="key white" data-note="F2" data-key-index="10">
-                    <span class="key-label">F</span>
-                </div>
-                <div class="key white" data-note="G2" data-key-index="11">
-                    <span class="key-label">G</span>
-                </div>
-
-                <!-- Black keys positioned absolutely -->
-                <div class="key black" data-note="C#" data-black-pos="0"></div>
-                <div class="key black" data-note="D#" data-black-pos="1"></div>
-                <div class="key black" data-note="F#" data-black-pos="3"></div>
-                <div class="key black" data-note="G#" data-black-pos="4"></div>
-                <div class="key black" data-note="A#" data-black-pos="5"></div>
-                <div class="key black" data-note="C#2" data-black-pos="7"></div>
-                <div class="key black" data-note="D#2" data-black-pos="8"></div>
-                <div class="key black" data-note="F#2" data-black-pos="10"></div>
+    <main>
+      <section class="stage" aria-label="Acorde actual">
+        <div class="readout">
+          <div class="readout__heading">
+            <p class="readout__symbol" id="symbol">C</p>
+            <div>
+              <p class="readout__name" id="longName">Do mayor</p>
+              <p class="readout__detail" id="detail"></p>
             </div>
+          </div>
+          <ol class="tones" id="tones"></ol>
+          <div class="readout__actions">
+            <button type="button" class="button button--primary" id="replayBtn">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4.5v11l9-5.5z"/></svg>
+              Escuchar
+            </button>
+            <button type="button" class="button" id="arpeggioBtn">Nota por nota</button>
+          </div>
         </div>
 
-        <!-- Song Mode -->
-        <div class="song-mode">
-            <h2>🎵 Modo Canción</h2>
-            <div class="song-input-container">
-                <input type="text" id="songInput" placeholder="Escribe acordes: C, D, Em, Bm, G, Am..."
-                    class="song-input">
-                <button id="loadSongBtn" class="load-song-btn">Cargar</button>
-            </div>
-            <div id="songPlayer" class="song-player hidden">
-                <button class="nav-btn prev-btn" id="prevChordBtn">◀</button>
-                <div class="song-chords" id="songChords"></div>
-                <button class="nav-btn next-btn" id="nextChordBtn">▶</button>
-            </div>
-            <div class="song-hint">💡 Usa ← → del teclado para navegar entre acordes</div>
-            <div class="keyboard-source-selector">
-                <span>Teclado físico usa:</span>
-                <button class="source-btn active" data-source="song" id="sourceSongBtn">🎵 Canción</button>
-                <button class="source-btn" data-source="default" id="sourceDefaultBtn">🎹 Mayor/Menor</button>
-            </div>
+        <div class="piano-viewport">
+          <div class="piano" id="piano"></div>
         </div>
 
-        <!-- Mode Selector -->
-        <div class="mode-selector">
-            <span class="mode-label">Modo de teclado:</span>
-            <button class="mode-btn active" data-mode="mayor">Mayor</button>
-            <button class="mode-btn" data-mode="menor">Menor</button>
-            <span class="keyboard-hint">🎹 Presiona C, D, E, F, G, A, B en tu teclado</span>
+        <div class="legend">
+          <span class="legend__item"><i class="dot role-root"></i>Fundamental</span>
+          <span class="legend__item"><i class="dot role-third"></i>Tercera</span>
+          <span class="legend__item"><i class="dot role-fifth"></i>Quinta</span>
+          <span class="legend__item"><i class="dot role-color"></i>Séptima y extensiones</span>
+          <span class="legend__item"><i class="dot dot--bass"></i>Bajo, mano izquierda</span>
+          <span class="legend__item legend__fingers">Los números son la digitación sugerida: 1 = pulgar</span>
+          <label class="switch legend__switch">
+            <input type="checkbox" id="bassToggle" checked>
+            <span>Tocar el bajo con la izquierda</span>
+          </label>
+        </div>
+      </section>
+
+      <div class="tabs" role="tablist" aria-label="Modo">
+        <button type="button" role="tab" id="tab-explore" aria-controls="panel-explore" data-tab="explore">Explorar acordes</button>
+        <button type="button" role="tab" id="tab-song" aria-controls="panel-song" data-tab="song">Practicar una canción</button>
+      </div>
+
+      <section class="panel" id="panel-explore" role="tabpanel" aria-labelledby="tab-explore">
+        <div class="field">
+          <h2 class="field__label">Fundamental</h2>
+          <div class="roots" id="roots"></div>
         </div>
 
-        <!-- Controls -->
-        <div class="controls">
-            <h2>Acordes Mayores</h2>
-            <div class="chord-row major-row">
-                <button class="chord-btn major" data-root="C" data-type="mayor">C</button>
-                <button class="chord-btn major" data-root="D" data-type="mayor">D</button>
-                <button class="chord-btn major" data-root="E" data-type="mayor">E</button>
-                <button class="chord-btn major" data-root="F" data-type="mayor">F</button>
-                <button class="chord-btn major" data-root="G" data-type="mayor">G</button>
-                <button class="chord-btn major" data-root="A" data-type="mayor">A</button>
-                <button class="chord-btn major" data-root="B" data-type="mayor">B</button>
-            </div>
-
-            <h2>Acordes Mayores #</h2>
-            <div class="chord-row major-sharp-row">
-                <button class="chord-btn major-sharp" data-root="C#" data-type="mayor">C#</button>
-                <button class="chord-btn major-sharp" data-root="D#" data-type="mayor">D#</button>
-                <button class="chord-btn major-sharp" data-root="F#" data-type="mayor">F#</button>
-                <button class="chord-btn major-sharp" data-root="G#" data-type="mayor">G#</button>
-                <button class="chord-btn major-sharp" data-root="A#" data-type="mayor">A#</button>
-            </div>
-
-            <h2>Acordes Menores</h2>
-            <div class="chord-row minor-row">
-                <button class="chord-btn minor" data-root="C" data-type="menor">Cm</button>
-                <button class="chord-btn minor" data-root="D" data-type="menor">Dm</button>
-                <button class="chord-btn minor" data-root="E" data-type="menor">Em</button>
-                <button class="chord-btn minor" data-root="F" data-type="menor">Fm</button>
-                <button class="chord-btn minor" data-root="G" data-type="menor">Gm</button>
-                <button class="chord-btn minor" data-root="A" data-type="menor">Am</button>
-                <button class="chord-btn minor" data-root="B" data-type="menor">Bm</button>
-            </div>
-
-            <h2>Acordes Menores #</h2>
-            <div class="chord-row minor-sharp-row">
-                <button class="chord-btn minor-sharp" data-root="C#" data-type="menor">C#m</button>
-                <button class="chord-btn minor-sharp" data-root="D#" data-type="menor">D#m</button>
-                <button class="chord-btn minor-sharp" data-root="F#" data-type="menor">F#m</button>
-                <button class="chord-btn minor-sharp" data-root="G#" data-type="menor">G#m</button>
-                <button class="chord-btn minor-sharp" data-root="A#" data-type="menor">A#m</button>
-            </div>
-
-            <button id="clearBtn" class="clear-btn">Limpiar</button>
-
-            <div id="chordInfo" class="chord-info"></div>
+        <div class="field">
+          <h2 class="field__label">Tipo de acorde</h2>
+          <div class="chips" id="triads" aria-label="Tríadas"></div>
+          <div class="chips chips--secondary" id="extended" aria-label="Con séptima y otros"></div>
         </div>
-    </div>
 
-    <script src="script.js"></script>
+        <div class="field">
+          <h2 class="field__label">Inversión</h2>
+          <div class="segmented" id="inversions" role="radiogroup" aria-label="Inversión"></div>
+        </div>
+
+        <div class="explain">
+          <p id="qualityText"></p>
+          <p class="explain__formula" id="formula"></p>
+        </div>
+
+        <div class="field">
+          <h2 class="field__label" id="keyTitle">Acordes de la tonalidad</h2>
+          <div class="diatonic" id="diatonic"></div>
+          <p class="hint">Con estos siete acordes se acompaña la mayoría de las canciones en esta tonalidad. Prueba con las teclas 1 a 7.</p>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-song" role="tabpanel" aria-labelledby="tab-song" hidden>
+        <div class="song-editor">
+          <label class="field__label" for="songInput">Acordes o canción completa</label>
+          <textarea id="songInput" rows="5" spellcheck="false"
+            placeholder="C G Am F&#10;&#10;También puedes pegar una canción con su letra: las líneas de texto se ignoran."></textarea>
+          <div class="song-editor__actions">
+            <button type="button" class="button button--primary" id="loadSongBtn">Cargar acordes</button>
+            <select id="examples" class="select" aria-label="Ejemplos">
+              <option value="">Probar un ejemplo…</option>
+            </select>
+          </div>
+          <p class="feedback" id="songFeedback" aria-live="polite"></p>
+        </div>
+
+        <div class="sheet" id="sheet" aria-label="Acordes de la canción"></div>
+
+        <div class="transport" id="transport" hidden>
+          <div class="transport__main">
+            <button type="button" class="icon-button" id="prevBtn" aria-label="Acorde anterior">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13 4.5 6 10l7 5.5z"/></svg>
+            </button>
+            <button type="button" class="icon-button icon-button--large" id="playBtn" aria-label="Reproducir">
+              <svg class="icon-play" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4.5v11l9-5.5z"/></svg>
+              <svg class="icon-pause" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 4.5h3v11h-3zM11.5 4.5h3v11h-3z"/></svg>
+            </button>
+            <button type="button" class="icon-button" id="nextBtn" aria-label="Acorde siguiente">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4.5 14 10l-7 5.5z"/></svg>
+            </button>
+            <div class="beats" id="beats" aria-hidden="true"></div>
+            <p class="up-next" id="upNext"></p>
+          </div>
+
+          <div class="transport__settings">
+            <label class="setting">
+              <span>Tempo</span>
+              <input type="range" id="tempo" min="40" max="160" step="2" value="80">
+              <output id="tempoValue" for="tempo">80</output>
+            </label>
+            <label class="setting">
+              <span>Tiempos por acorde</span>
+              <select id="beatsPerChord" class="select select--small">
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+              </select>
+            </label>
+            <div class="setting">
+              <span>Transportar</span>
+              <div class="stepper">
+                <button type="button" id="transposeDown" aria-label="Bajar un semitono">−</button>
+                <output id="transposeValue">0</output>
+                <button type="button" id="transposeUp" aria-label="Subir un semitono">+</button>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="smoothToggle" checked>
+              <span>Enlace suave <small>(elige la inversión más cercana)</small></span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="clickToggle">
+              <span>Metrónomo</span>
+            </label>
+            <button type="button" class="button button--quiet" id="shareBtn">Copiar enlace</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="midi" id="midi">
+        <div>
+          <h2 class="midi__title">¿Tienes un piano digital?</h2>
+          <p class="midi__text" id="midiText">Conéctalo por USB y la página te dirá qué acorde estás tocando. En el modo canción, avanza sola cuando aciertas.</p>
+        </div>
+        <div class="midi__actions">
+          <button type="button" class="button" id="midiBtn">Conectar teclado MIDI</button>
+          <p class="midi__played" id="midiPlayed" aria-live="polite"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <details class="shortcuts">
+        <summary>Atajos de teclado</summary>
+        <dl>
+          <dt><kbd>Espacio</kbd></dt><dd>Escuchar otra vez · en una canción, reproducir o pausar</dd>
+          <dt><kbd>A</kbd>–<kbd>G</kbd></dt><dd>Elegir la fundamental · en una canción, saltar al siguiente acorde con esa letra</dd>
+          <dt><kbd>M</kbd></dt><dd>Cambiar entre mayor y menor</dd>
+          <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Cambiar de inversión</dd>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Acorde anterior y siguiente</dd>
+          <dt><kbd>1</kbd>–<kbd>7</kbd></dt><dd>Acordes de la tonalidad</dd>
+        </dl>
+      </details>
+      <p class="credits">
+        Sonido: <a href="https://archive.org/details/SalamanderGrandPianoV3">Salamander Grand Piano</a> de Alexander Holm (CC BY 3.0).
+        <a href="https://github.com/FabianIMV/learn-piano">Código en GitHub</a>.
+      </p>
+    </footer>
+  </div>
 </body>
-
 </html>
